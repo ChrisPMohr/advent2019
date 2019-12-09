@@ -1,11 +1,11 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 
 def main():
     result = None
     with open('input.txt', 'r') as f:
-        for line in f.readlines():
-            pass
+        line = f.readline().strip()
+        lines = f.readlines()
     print(result)
 
 
