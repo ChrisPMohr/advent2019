@@ -19,13 +19,41 @@ def main():
         pc = 0
         relative_base = 0
 
+        view = []
+
         while True:
             input_list = []
             output = run_program(program, input_list, pc, relative_base)
             if output is None:
                 break
             else:
-                paint_color, program, pc, relative_base = output
+                val, program, pc, relative_base = output
+                view.append(val)
+
+        rows = []
+        cur_row = []
+        for v in view:
+            if v == 10:
+                rows.append(cur_row)
+                cur_row = []
+            else:
+                cur_row.append(v)
+
+        target = 35
+        poses = set()
+        for y in range(len(rows)):
+            for x in range(len(rows[y])):
+                if rows[y][x] == target:
+                    poses.add((x,y))
+
+        result = 0
+        for p in poses:
+            x,y = p
+            if (x+1, y) in poses and (x-1, y) in poses and (x,y+1) in poses and (x,y-1) in poses:
+                result += (x*y)
+
+        print(result)
+        print("\n".join([''.join([chr(v) for v in row]) for row in rows]))
 
 
 def read_arg(arg_pos, is_address, instruction, program, pc, relative_base):
@@ -72,7 +100,7 @@ def run_program(program, input_stream, pc=0, relative_base=0):
             pc += 4
         elif instruction == 3:
             val1, op1 = read_arg(1, True, orig_instruction, program, pc, relative_base)
-            input = input_stream.pop(0)
+            input = input_stream.pop()
             logger.debug("store %s - %s -> %s", op1, input, val1)
             program[val1] = input
             pc += 2

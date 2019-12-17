@@ -19,13 +19,47 @@ def main():
         pc = 0
         relative_base = 0
 
+        input_s = """B,A,B,C,A,C,A,C,B,C
+L,8,L,6,L,10
+R,12,L,6,R,12
+R,12,L,10,L,6,R,10
+n
+"""
+        input_list = [ord(c) for c in input_s]
+
+        program[0] = 2
+
+        view = []
+
         while True:
-            input_list = []
             output = run_program(program, input_list, pc, relative_base)
             if output is None:
                 break
             else:
-                paint_color, program, pc, relative_base = output
+                val, program, pc, relative_base = output
+                if val > 255:
+                    print("Got output", val)
+                else:
+                    view.append(val)
+
+        rows = []
+        cur_row = []
+        for v in view:
+            if v == 10:
+                rows.append(cur_row)
+                cur_row = []
+            else:
+                cur_row.append(v)
+
+        target = 35
+        poses = set()
+        for y in range(len(rows)):
+            for x in range(len(rows[y])):
+                if rows[y][x] == target:
+                    poses.add((x,y))
+
+
+        print("\n".join([''.join([chr(v) for v in row]) for row in rows]))
 
 
 def read_arg(arg_pos, is_address, instruction, program, pc, relative_base):
